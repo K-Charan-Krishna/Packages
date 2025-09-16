@@ -53,7 +53,7 @@ module.exports={
             const texttodisplay = htmlToText(pdfdata.content, {
             wordwrap: 130
             });
-            console.log(texttodisplay);
+            // console.log(texttodisplay);
             doc.fontSize(12).text(texttodisplay);
             doc.end()
         }

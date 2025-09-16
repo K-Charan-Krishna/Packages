@@ -5,14 +5,22 @@ const passport = require('passport');
 const multer = require('multer');
 const mongoose=require('mongoose')
 const session=require('express-session')
+const rateLimit = require('express-rate-limit');
 // const GoogleStrategy = require('passport-google-oauth2').Strategy;
 require('./Auth')
 
 
 
-
-
 const app = express();
+
+const messageLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 5, 
+  message: 'You have exceeded your daily request limit!'
+});
+
+
+
 const PORT = 5002;
 
 app.use(express.json())
@@ -38,9 +46,9 @@ mongoose.connect(url, {
     console.log('Could not connect to the database. Exiting now...', err);
     process.exit();
 });
-app.use('/api',fileRouter)
-app.use('/api',pdfgen)
-app.use('/api',excelreport)
+app.use('/api',messageLimiter,fileRouter)
+app.use('/api',messageLimiter,pdfgen)
+app.use('/api',messageLimiter,excelreport)
 app.use('/api',sendmail)
 
   
