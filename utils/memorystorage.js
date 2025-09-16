@@ -26,4 +26,4 @@ const upload=multer({
     fileFilter:fileFilterfun
 })
 
-module.exports=upload
+module.exports= upload

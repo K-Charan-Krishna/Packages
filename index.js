@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const passport = require('passport');
 const multer = require('multer');
 const mongoose=require('mongoose')
@@ -20,7 +21,7 @@ app.use(session({
 }));
 app.use(passport.initialize())
 app.use(passport.session())
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const fileRouter=require('./fileuploads/fileuploads.router')
 const pdfgen= require('./pdfgenerate/pdfgenerate.router')
@@ -41,6 +42,7 @@ app.use('/api',fileRouter)
 app.use('/api',pdfgen)
 app.use('/api',excelreport)
 app.use('/api',sendmail)
+
   
 
 //OAuth 2.0 

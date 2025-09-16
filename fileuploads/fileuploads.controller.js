@@ -1,4 +1,5 @@
 const { diskUploadService } = require("./fileuploads.service");
+const {uploadFile}=require('../utils/s3upload')
 
 
 module.exports = {
@@ -18,8 +19,13 @@ module.exports = {
     memoryStorageupload:async(req, res)=>{
         try{
         console.log('from memory')
-        console.log(req.file)
-        return res.send({ message: 'File uploaded successfully', file: req.file })
+        const resFile=req.file
+        console.log(resFile)
+        const key=Date.now()+resFile.originalname
+        const fileBuffer=resFile.buffer
+        const mimetype=resFile.mimetype
+        const responce_from= await uploadFile(key, fileBuffer, mimetype)
+        return res.send({ message: 'File uploaded successfully', file: responce_from })
     }catch(error){
         return res.status(500).send({ error: error.message });
     }
