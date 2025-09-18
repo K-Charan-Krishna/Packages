@@ -6,6 +6,7 @@ const multer = require('multer');
 const mongoose=require('mongoose')
 const session=require('express-session')
 const rateLimit = require('express-rate-limit');
+const puppeteer=require('puppeteer')
 // const GoogleStrategy = require('passport-google-oauth2').Strategy;
 require('./Auth')
 
@@ -52,6 +53,63 @@ app.use('/api',messageLimiter,excelreport)
 app.use('/api',sendmail)
 
   
+
+//puppeteer
+app.get('/usepuppeteer',async(req,res)=>{
+  console.log('Puppeteer API')
+  const browser = await puppeteer.launch({ headless: false, slowMo: 50 });
+  const page = await browser.newPage();
+
+  // Navigate to login page
+  await page.goto('http://localhost:3000/loginpage');
+
+  // Type username and password into form fields
+  await page.type('#UserId', 'charan.krishna@verifacts.co.in');
+  await page.type('#PassWord', 'Charan@123');
+
+  // Click login button and wait for page to load
+  await page.click('#LoginButton');
+  await page.waitForNavigation({ visible: true });
+
+  console.log('Logged in successfully!');
+
+  await browser.close();
+})
+
+async function scrapeWebsite() {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  // Go to a webpage
+  await page.goto('http://localhost:3000/loginpage');
+
+  // Scrape data from the page
+const data = await page.evaluate(() => {
+  return {
+    title: document.title,
+    headings: Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).map(el => el.innerText.trim()),
+    paragraphs: Array.from(document.querySelectorAll('p')).map(el => el.innerText.trim()),
+    links: Array.from(document.querySelectorAll('a')).map(el => ({
+      text: el.innerText.trim(),
+      href: el.href
+    })),
+    images: Array.from(document.querySelectorAll('img')).map(img => ({
+      alt: img.alt,
+      src: img.src
+    }))
+  };
+});
+
+
+  // console.log(data); // Logs the scraped headings
+
+  await browser.close();
+}
+
+// scrapeWebsite();
+
+
+
 
 //OAuth 2.0 
 // // Middleware to protect route

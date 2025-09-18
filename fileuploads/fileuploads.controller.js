@@ -1,5 +1,6 @@
 const { diskUploadService } = require("./fileuploads.service");
 const {uploadFile}=require('../utils/s3upload')
+const busboyupload=require('../utils/budboy')
 
 
 module.exports = {
@@ -29,5 +30,15 @@ module.exports = {
     }catch(error){
         return res.status(500).send({ error: error.message });
     }
+    },
+    busboyupload:async(req,res)=>{
+        try {
+            console.log('From Busboy')
+            await busboyupload(req,res)
+        } catch (error) {
+            console.log(error.message)
+            res(error.message)
+        }
+
     }
 }
