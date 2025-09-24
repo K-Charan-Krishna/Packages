@@ -30,9 +30,10 @@ const storage = multer.diskStorage({
 
 const uploads = multer({
      storage: storage,
-     fileFilter:fileFilterfun,    
-     limits:{
-        fileSize:5
-    } });
+    //  fileFilter:fileFilterfun,    
+    //  limits:{
+    //     fileSize:5
+    // } 
+    });
 
 module.exports=uploads

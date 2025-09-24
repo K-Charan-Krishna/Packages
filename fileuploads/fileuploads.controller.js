@@ -1,6 +1,7 @@
 const { diskUploadService } = require("./fileuploads.service");
 const {uploadFile}=require('../utils/s3upload')
 const busboyupload=require('../utils/budboy')
+const generateTheExcel=require('../utils/readExcelBuffer')
 
 
 module.exports = {
@@ -37,7 +38,19 @@ module.exports = {
             await busboyupload(req,res)
         } catch (error) {
             console.log(error.message)
-            res(error.message)
+             return res.status(500).send({ error: error.message });
+        }
+
+    },
+    excelUpload:async(req,res)=>{
+        try {
+            const filedata=req.files.file
+            const bufferData=filedata.data
+            console.log(bufferData)
+            let status=await generateTheExcel(bufferData)
+            res.send(status)
+        } catch (error) {
+            return res.status(500).send({ error: error.message });
         }
 
     }

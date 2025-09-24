@@ -7,6 +7,7 @@ const mongoose=require('mongoose')
 const session=require('express-session')
 const rateLimit = require('express-rate-limit');
 const puppeteer=require('puppeteer')
+const fileUpload = require("express-fileupload");
 // const GoogleStrategy = require('passport-google-oauth2').Strategy;
 require('./Auth')
 
@@ -20,7 +21,15 @@ const messageLimiter = rateLimit({
   message: 'You have exceeded your daily request limit!'
 });
 
-
+app.use(
+    fileUpload({
+        createParentPath: true,
+        preserveExtension: true,
+        limits: { fileSize: 100 * 1024 * 1024 },
+        abortOnLimit: true,
+        tempFileDir: "/uploads"
+    })
+);
 
 const PORT = 5002;
 
@@ -107,9 +116,6 @@ const data = await page.evaluate(() => {
 }
 
 // scrapeWebsite();
-
-
-
 
 //OAuth 2.0 
 // // Middleware to protect route
